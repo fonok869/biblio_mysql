@@ -1,0 +1,58 @@
+-- Ajouter un livre : 
+
+INSERT INTO sys.books (fk_title_id, fk_author_id, fk_theme_id, fk_location_id, fk_publication_year_id) 
+			   VALUES (9,3,3,3,3);
+               
+-- Ajouter des données à un livre
+
+UPDATE sys.books SET fk_language_id = 2 WHERE pk_book_id = 12;
+UPDATE sys.books SET fk_edition_id = 2 WHERE pk_book_id = 12;
+UPDATE sys.books SET fk_status_id = 2 WHERE pk_book_id = 12;
+UPDATE sys.books SET weight = 0.5 WHERE pk_book_id = 12;
+UPDATE sys.books SET fk_borrower_id = 1 WHERE pk_book_id = 12;
+               
+-- Ajouter un (des) metadonnée(s) à la DB : 
+               
+INSERT INTO sys.titles (title) VALUES ('A Game of thrones');
+INSERT INTO sys.authors (author_last_name,author_first_name) VALUEs ('Martin','GRR');
+INSERT INTO sys.themes (theme) VALUES ('Horror');
+INSERT INTO sys.locations (location) VALUES ('A3');
+INSERT INTO sys.publication_years (publication_years) VALUES ('2005');
+INSERT INTO sys.editions (edition) VALUES ('flammarion');
+INSERT INTO sys.status (status) VALUES ('volé');
+
+-- Ajouter une adresse à la DB
+INSERT INTO sys.adresses (street_number, house_number, city, zip_code) VALUES
+						 ('rue de lyon' , 6, 'bordeaux',33000);
+                         
+-- Ajouter un utilisateur à la DB
+
+INSERT INTO sys.users (last_name, first_name, telephone_number, fk_adress, subscription_date, number_of_borrowed_books)
+				VALUES ('Molnar', 'Ferenc', 0612564544, 1, '2015-12-14', 1);
+
+                             
+-- Afficher tous les livres d'un même autheur : 
+
+SELECT DISTINCT
+    t.title
+FROM
+    sys.titles AS t
+        LEFT JOIN
+    sys.books AS b ON t.pk_title_id = b.fk_title_id
+        LEFT JOIN
+    sys.authors AS a ON b.fk_author_id = a.pk_author_id
+WHERE
+    a.author_last_name = 'Tolkien'
+        AND a.author_first_name = 'King';
+        
+-- Afficher le nombre de livres dans chaque langues : 
+
+SELECT
+    COUNT(*) AS 'Nombre de livres', l.language
+FROM
+    sys.titles AS t
+        LEFT JOIN
+    sys.books AS b ON t.pk_title_id = b.fk_title_id
+        LEFT JOIN
+    sys.languages AS l ON l.pk_language_id = b.fk_language_id
+GROUP BY l.language
